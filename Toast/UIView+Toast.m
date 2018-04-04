@@ -246,7 +246,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         imageView = [[UIImageView alloc] initWithImage:image];
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.frame = CGRectMake(style.horizontalPadding, style.verticalPadding, style.imageSize.width, style.imageSize.height);
-        imageView.layer.cornerRadius = style.cornerRadius;
+        imageView.layer.cornerRadius = style.imageRadius;
     }
     
     CGRect imageRect = CGRectZero;
