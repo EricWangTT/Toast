@@ -328,6 +328,11 @@ extern const NSString * CSToastPositionBottom;
 @property (assign, nonatomic) CGSize imageSize;
 
 /**
+ The image radius. The default is `0.0`.
+ */
+@property (assign, nonatomic) CGFloat imageRadius;
+
+/**
  The size of the toast activity view when `makeToastActivity:` is called.
  Default is `CGSizeMake(100.0, 100.0)`.
  */

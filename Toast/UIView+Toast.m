@@ -246,6 +246,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         imageView = [[UIImageView alloc] initWithImage:image];
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.frame = CGRectMake(style.horizontalPadding, style.verticalPadding, style.imageSize.width, style.imageSize.height);
+        imageView.layer.cornerRadius = style.cornerRadius;
     }
     
     CGRect imageRect = CGRectZero;
@@ -485,6 +486,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.imageSize = CGSizeMake(80.0, 80.0);
         self.activitySize = CGSizeMake(100.0, 100.0);
         self.fadeDuration = 0.2;
+        self.imageRadius = 0.0f;
     }
     return self;
 }
