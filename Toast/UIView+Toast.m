@@ -272,6 +272,9 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         
         // size the title label according to the length of the text
         CGSize maxSizeTitle = CGSizeMake((self.bounds.size.width * style.maxWidthPercentage) - imageRect.size.width, self.bounds.size.height * style.maxHeightPercentage);
+        if (style.fixedTextWidth > 0.0f) {
+          maxSizeTitle.width = style.fixedTextWidth;
+        }
         CGSize expectedSizeTitle = [titleLabel sizeThatFits:maxSizeTitle];
         // UILabel can return a size larger than the max size when the number of lines is 1
         expectedSizeTitle = CGSizeMake(MIN(maxSizeTitle.width, expectedSizeTitle.width), MIN(maxSizeTitle.height, expectedSizeTitle.height));
@@ -290,6 +293,9 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         messageLabel.text = message;
         
         CGSize maxSizeMessage = CGSizeMake((self.bounds.size.width * style.maxWidthPercentage) - imageRect.size.width, self.bounds.size.height * style.maxHeightPercentage);
+        if (style.fixedTextWidth > 0.0f) {
+          maxSizeMessage.width = style.fixedTextWidth;
+        }
         CGSize expectedSizeMessage = [messageLabel sizeThatFits:maxSizeMessage];
         // UILabel can return a size larger than the max size when the number of lines is 1
         expectedSizeMessage = CGSizeMake(MIN(maxSizeMessage.width, expectedSizeMessage.width), MIN(maxSizeMessage.height, expectedSizeMessage.height));
@@ -504,6 +510,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.fixedWidth = 0.0f;
         self.fixedHeight = 0.0f;
         self.verticalOffset = 0.0f;
+        self.fixedTextWidth = 0.0f;
     }
     return self;
 }
