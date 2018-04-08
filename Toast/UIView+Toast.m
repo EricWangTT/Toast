@@ -309,7 +309,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     
     if(messageLabel != nil) {
         messageRect.origin.x = imageRect.origin.x + imageRect.size.width + style.horizontalPadding;
-        messageRect.origin.y = titleRect.origin.y + titleRect.size.height + style.verticalPadding;
+        messageRect.origin.y = titleRect.origin.y + titleRect.size.height + style.messageVerticalPadding;
         messageRect.size.width = messageLabel.bounds.size.width;
         messageRect.size.height = messageLabel.bounds.size.height;
     }
@@ -476,6 +476,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.maxWidthPercentage = 0.8;
         self.maxHeightPercentage = 0.8;
         self.horizontalPadding = 10.0;
+        self.messageVerticalPadding = 6.0f;
         self.verticalPadding = 10.0;
         self.cornerRadius = 10.0;
         self.titleFont = [UIFont boldSystemFontOfSize:16.0];

@@ -268,6 +268,13 @@ extern const NSString * CSToastPositionBottom;
 @property (assign, nonatomic) CGFloat verticalPadding;
 
 /**
+ The spacing from the message vertical edge of the toast view to the content. When a title
+ is present, this is also used as the padding between the title and the message.
+ Default is 6.0.
+ */
+@property (assign, nonatomic) CGFloat messageVerticalPadding;
+
+/**
  The corner radius. Default is 10.0.
  */
 @property (assign, nonatomic) CGFloat cornerRadius;
