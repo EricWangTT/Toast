@@ -322,9 +322,17 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     CGFloat wrapperHeight = MAX((messageRect.origin.y + messageRect.size.height + style.verticalPadding), (imageRect.size.height + (style.verticalPadding * 2.0)));
   
     if (style.fixedWidth > 0.0f) {
-      wrapperView.frame = CGRectMake(0.0, 0.0, style.fixedWidth, wrapperHeight);
+      if (style.fixedHeight > 0.0f) {
+        wrapperView.frame = CGRectMake(0.0, 0.0, style.fixedWidth, style.fixedHeight);
+      } else {
+        wrapperView.frame = CGRectMake(0.0, 0.0, style.fixedWidth, wrapperHeight);
+      }
     } else {
-      wrapperView.frame = CGRectMake(0.0, 0.0, wrapperWidth, wrapperHeight);
+      if (style.fixedHeight > 0.0f) {
+        wrapperView.frame = CGRectMake(0.0, 0.0, wrapperWidth, style.fixedHeight);
+      } else {
+        wrapperView.frame = CGRectMake(0.0, 0.0, wrapperWidth, wrapperHeight);
+      }
     }
     
     if(titleLabel != nil) {
@@ -494,6 +502,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.fadeDuration = 0.2;
         self.imageRadius = 0.0f;
         self.fixedWidth = 0.0f;
+        self.fixedHeight = 0.0f;
     }
     return self;
 }

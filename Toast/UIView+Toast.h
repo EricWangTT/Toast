@@ -254,6 +254,12 @@ extern const NSString * CSToastPositionBottom;
 @property (assign, nonatomic) CGFloat fixedWidth;
 
 /**
+ A value , representing the height of the toast
+ view relative to it's superview. Default is 0.0
+ */
+@property (assign, nonatomic) CGFloat fixedHeight;
+
+/**
  The spacing from the horizontal edge of the toast view to the content. When an image
  is present, this is also used as the padding between the image and the text.
  Default is 10.0.
