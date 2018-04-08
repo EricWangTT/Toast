@@ -247,6 +247,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.frame = CGRectMake(style.horizontalPadding, style.verticalPadding, style.imageSize.width, style.imageSize.height);
         imageView.layer.cornerRadius = style.imageRadius;
+        imageView.clipsToBounds = YES;
     }
     
     CGRect imageRect = CGRectZero;
@@ -319,8 +320,12 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     // Wrapper width uses the longerWidth or the image width, whatever is larger. Same logic applies to the wrapper height.
     CGFloat wrapperWidth = MAX((imageRect.size.width + (style.horizontalPadding * 2.0)), (longerX + longerWidth + style.horizontalPadding));
     CGFloat wrapperHeight = MAX((messageRect.origin.y + messageRect.size.height + style.verticalPadding), (imageRect.size.height + (style.verticalPadding * 2.0)));
-    
-    wrapperView.frame = CGRectMake(0.0, 0.0, wrapperWidth, wrapperHeight);
+  
+    if (style.fixedWidth > 0.0f) {
+      wrapperView.frame = CGRectMake(0.0, 0.0, style.fixedWidth, wrapperHeight);
+    } else {
+      wrapperView.frame = CGRectMake(0.0, 0.0, wrapperWidth, wrapperHeight);
+    }
     
     if(titleLabel != nil) {
         titleLabel.frame = titleRect;
@@ -487,6 +492,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.activitySize = CGSizeMake(100.0, 100.0);
         self.fadeDuration = 0.2;
         self.imageRadius = 0.0f;
+        self.fixedWidth = 0.0f;
     }
     return self;
 }
