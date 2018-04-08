@@ -245,7 +245,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     if(image != nil) {
         imageView = [[UIImageView alloc] initWithImage:image];
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-        imageView.frame = CGRectMake(style.horizontalPadding, style.verticalPadding, style.imageSize.width, style.imageSize.height);
+        imageView.frame = CGRectMake(style.horizontalPadding, style.verticalPadding + style.verticalOffset, style.imageSize.width, style.imageSize.height);
         imageView.layer.cornerRadius = style.imageRadius;
         imageView.clipsToBounds = YES;
     }
@@ -254,7 +254,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     
     if(imageView != nil) {
         imageRect.origin.x = style.horizontalPadding;
-        imageRect.origin.y = style.verticalPadding;
+        imageRect.origin.y = style.verticalPadding + style.verticalOffset;
         imageRect.size.width = imageView.bounds.size.width;
         imageRect.size.height = imageView.bounds.size.height;
     }
@@ -300,7 +300,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     
     if(titleLabel != nil) {
         titleRect.origin.x = imageRect.origin.x + imageRect.size.width + style.horizontalPadding;
-        titleRect.origin.y = style.verticalPadding;
+        titleRect.origin.y = style.verticalPadding + style.verticalOffset;
         titleRect.size.width = titleLabel.bounds.size.width;
         titleRect.size.height = titleLabel.bounds.size.height;
     }
@@ -503,6 +503,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.imageRadius = 0.0f;
         self.fixedWidth = 0.0f;
         self.fixedHeight = 0.0f;
+        self.verticalOffset = 0.0f;
     }
     return self;
 }
