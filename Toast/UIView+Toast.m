@@ -149,9 +149,17 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 #pragma mark - Private Show/Hide Methods
 
 - (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position {
-    toast.center = [self cs_centerPointForPosition:position withToast:toast];
-    toast.alpha = 0.0;
-    
+    CGPoint centerPos = [self cs_centerPointForPosition:position withToast:toast];
+    ToastAnimationType animationType = [CSToastManager defaultAnimationType];
+  
+    if ( animationType == ToastAnimationTypeSlideDown ) {
+      toast.center = CGPointMake(centerPos.x, centerPos.y - toast.bounds.size.height);
+      toast.alpha = 1.0;
+    } else {
+      toast.center = centerPos;
+      toast.alpha = 0.0;
+    }
+  
     if ([CSToastManager isTapToDismissEnabled]) {
         UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cs_handleToastTapped:)];
         [toast addGestureRecognizer:recognizer];
@@ -167,7 +175,12 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
                           delay:0.0
                         options:(UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction)
                      animations:^{
+                       if ( animationType == ToastAnimationTypeSlideDown ) {
+                         toast.center = centerPos;
+                       } else {
                          toast.alpha = 1.0;
+                       }
+                       
                      } completion:^(BOOL finished) {
                          NSTimer *timer = [NSTimer timerWithTimeInterval:duration target:self selector:@selector(cs_toastTimerDidFinish:) userInfo:toast repeats:NO];
                          [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -536,6 +549,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 @property (assign, nonatomic, getter=isQueueEnabled) BOOL queueEnabled;
 @property (assign, nonatomic) NSTimeInterval defaultDuration;
 @property (strong, nonatomic) id defaultPosition;
+@property (assign, nonatomic) ToastAnimationType animationType;
 
 @end
 
@@ -597,6 +611,14 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 + (NSTimeInterval)defaultDuration {
     return [[self sharedManager] defaultDuration];
+}
+
++ (void)setDefaultAnimationType:(ToastAnimationType)duration {
+  [[self sharedManager] setAnimationType:duration];
+}
+
++ (ToastAnimationType)defaultAnimationType {
+  return [[self sharedManager] animationType];
 }
 
 + (void)setDefaultPosition:(id)position {

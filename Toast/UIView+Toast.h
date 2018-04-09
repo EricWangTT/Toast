@@ -208,6 +208,11 @@ extern const NSString * CSToastPositionBottom;
 
 @end
 
+typedef enum : NSUInteger {
+  ToastAnimationTypeFade,
+  ToastAnimationTypeSlideDown,
+} ToastAnimationType;
+
 /**
  `CSToastStyle` instances define the look and feel for toast views created via the 
  `makeToast:` methods as well for toast views created directly with
@@ -461,6 +466,22 @@ extern const NSString * CSToastPositionBottom;
  @return duration The toast duration
 */
 + (NSTimeInterval)defaultDuration;
+
+/**
+ Sets the default animation type. Used for the `makeToast:` and
+ `showToast:` methods that don't require an explicit duration.
+ Default is Fade.
+ 
+ @param animationType
+ */
++ (void)setDefaultAnimationType:(ToastAnimationType)animationType;
+
+/**
+ Returns the default animation type. Default is Fade.
+ 
+ @return default animation type
+ */
++ (ToastAnimationType)defaultAnimationType;
 
 /**
  Sets the default position. Used for the `makeToast:` and
