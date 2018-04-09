@@ -36,6 +36,7 @@ NSString * CSToastPositionBottom                    = @"CSToastPositionBottom";
 static const NSString * CSToastTimerKey             = @"CSToastTimerKey";
 static const NSString * CSToastDurationKey          = @"CSToastDurationKey";
 static const NSString * CSToastPositionKey          = @"CSToastPositionKey";
+static const NSString * CSToastAnimationTypeKey    = @"CSToastAnimationTypeKey";
 static const NSString * CSToastCompletionKey        = @"CSToastCompletionKey";
 
 // Keys for values associated with self
@@ -53,7 +54,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
  results in code that is less legible. The current public method names seem unlikely to cause
  conflicts so I think we should favor the cleaner API for now.
  */
-- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position;
+- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position animationType:(ToastAnimationType)animationType;
 - (void)cs_hideToast:(UIView *)toast;
 - (void)cs_hideToast:(UIView *)toast fromTap:(BOOL)fromTap;
 - (void)cs_toastTimerDidFinish:(NSTimer *)timer;
@@ -77,21 +78,21 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 - (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position style:(CSToastStyle *)style {
     UIView *toast = [self toastViewForMessage:message title:nil image:nil style:style];
-    [self showToast:toast duration:duration position:position completion:nil];
+    [self showToast:toast duration:duration position:position animationType:style.toastAnimationType completion:nil];
 }
 
 - (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position title:(NSString *)title image:(UIImage *)image style:(CSToastStyle *)style completion:(void(^)(BOOL didTap))completion {
     UIView *toast = [self toastViewForMessage:message title:title image:image style:style];
-    [self showToast:toast duration:duration position:position completion:completion];
+    [self showToast:toast duration:duration position:position animationType:style.toastAnimationType completion:completion];
 }
 
 #pragma mark - Show Toast Methods
 
 - (void)showToast:(UIView *)toast {
-    [self showToast:toast duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] completion:nil];
+    [self showToast:toast duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition]  animationType:ToastAnimationTypeFade completion:nil];
 }
 
-- (void)showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position completion:(void(^)(BOOL didTap))completion {
+- (void)showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position animationType:(ToastAnimationType)animationType completion:(void(^)(BOOL didTap))completion {
     // sanity
     if (toast == nil) return;
     
@@ -102,12 +103,13 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         // we're about to queue this toast view so we need to store the duration and position as well
         objc_setAssociatedObject(toast, &CSToastDurationKey, @(duration), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(toast, &CSToastPositionKey, position, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(toast, &CSToastAnimationTypeKey, @(animationType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
         // enqueue
         [self.cs_toastQueue addObject:toast];
     } else {
         // present
-        [self cs_showToast:toast duration:duration position:position];
+        [self cs_showToast:toast duration:duration position:position animationType:(ToastAnimationType)animationType];
     }
 }
 
@@ -148,9 +150,8 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 #pragma mark - Private Show/Hide Methods
 
-- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position {
+- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position animationType:(ToastAnimationType)animationType{
     CGPoint centerPos = [self cs_centerPointForPosition:position withToast:toast];
-    ToastAnimationType animationType = [CSToastManager defaultAnimationType];
   
     if ( animationType == ToastAnimationTypeSlideDown ) {
       toast.center = CGPointMake(centerPos.x, centerPos.y - toast.bounds.size.height);
@@ -221,7 +222,8 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
                              // present the next toast
                              NSTimeInterval duration = [objc_getAssociatedObject(nextToast, &CSToastDurationKey) doubleValue];
                              id position = objc_getAssociatedObject(nextToast, &CSToastPositionKey);
-                             [self cs_showToast:nextToast duration:duration position:position];
+                            id animationType = objc_getAssociatedObject(nextToast, &CSToastAnimationTypeKey);
+                             [self cs_showToast:nextToast duration:duration position:position animationType:[(NSNumber*)animationType integerValue]];
                          }
                      }];
 }
@@ -524,6 +526,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
         self.fixedHeight = 0.0f;
         self.verticalOffset = 0.0f;
         self.fixedTextWidth = 0.0f;
+        self.toastAnimationType = ToastAnimationTypeFade;
     }
     return self;
 }
@@ -611,14 +614,6 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 + (NSTimeInterval)defaultDuration {
     return [[self sharedManager] defaultDuration];
-}
-
-+ (void)setDefaultAnimationType:(ToastAnimationType)duration {
-  [[self sharedManager] setAnimationType:duration];
-}
-
-+ (ToastAnimationType)defaultAnimationType {
-  return [[self sharedManager] animationType];
 }
 
 + (void)setDefaultPosition:(id)position {

@@ -29,6 +29,11 @@ extern const NSString * CSToastPositionTop;
 extern const NSString * CSToastPositionCenter;
 extern const NSString * CSToastPositionBottom;
 
+typedef enum : NSUInteger {
+  ToastAnimationTypeFade,
+  ToastAnimationTypeSlideDown,
+} ToastAnimationType;
+
 @class CSToastStyle;
 
 /**
@@ -198,20 +203,17 @@ extern const NSString * CSToastPositionBottom;
  @param duration The notification duration
  @param position The toast's center point. Can be one of the predefined CSToastPosition
                  constants or a `CGPoint` wrapped in an `NSValue` object.
+ @param animationType  The toast's animation type.
  @param completion The completion block, executed after the toast view disappears.
                    didTap will be `YES` if the toast view was dismissed from a tap.
  */
 - (void)showToast:(UIView *)toast
          duration:(NSTimeInterval)duration
          position:(id)position
+        animationType:(ToastAnimationType)animationType
        completion:(void(^)(BOOL didTap))completion;
 
 @end
-
-typedef enum : NSUInteger {
-  ToastAnimationTypeFade,
-  ToastAnimationTypeSlideDown,
-} ToastAnimationType;
 
 /**
  `CSToastStyle` instances define the look and feel for toast views created via the 
@@ -381,6 +383,11 @@ typedef enum : NSUInteger {
 @property (assign, nonatomic) NSTimeInterval fadeDuration;
 
 /**
+ The toast show Animation Type.
+ */
+@property (assign, nonatomic) ToastAnimationType toastAnimationType;
+
+/**
  Creates a new instance of `CSToastStyle` with all the default values set.
  */
 - (instancetype)initWithDefaultStyle NS_DESIGNATED_INITIALIZER;
@@ -466,22 +473,6 @@ typedef enum : NSUInteger {
  @return duration The toast duration
 */
 + (NSTimeInterval)defaultDuration;
-
-/**
- Sets the default animation type. Used for the `makeToast:` and
- `showToast:` methods that don't require an explicit duration.
- Default is Fade.
- 
- @param animationType
- */
-+ (void)setDefaultAnimationType:(ToastAnimationType)animationType;
-
-/**
- Returns the default animation type. Default is Fade.
- 
- @return default animation type
- */
-+ (ToastAnimationType)defaultAnimationType;
 
 /**
  Sets the default position. Used for the `makeToast:` and
